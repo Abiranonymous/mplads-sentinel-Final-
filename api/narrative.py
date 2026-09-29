@@ -2,6 +2,9 @@ from __future__ import annotations
 
 import functools
 import os
+from dotenv import load_dotenv   # <--- ADDED LINE
+
+load_dotenv()# <--- ADDED LINE
 
 GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
 SYSTEM_INSTRUCTION = (
