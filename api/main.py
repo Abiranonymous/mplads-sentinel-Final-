@@ -971,12 +971,11 @@ app = FastAPI(
 )
 
 from fastapi.middleware.cors import CORSMiddleware
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://mplads-sentinel-sih.netlify.app"
- "https://mplads-sentinel-sih.netlify.app/"
-],
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
