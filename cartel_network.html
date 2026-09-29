@@ -1,0 +1,258 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 640px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 640px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND-TN-2025-4937", "label": "Ramakrishnan Infrastructure Pvt Ltd", "shape": "dot", "size": 15.9704, "title": "VND-TN-2025-4937 | Tamil Nadu | \u20b92.99 Cr | CARTEL-001"}, {"color": "#0f766e", "font": {"color": "#1f2937"}, "id": "pan:SSBHH1414W", "label": "SSBH\u2026414W", "shape": "square", "size": 8, "title": "PAN shared by 1 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "bank:SBIN76741334266", "label": "SBIN\u20264266", "shape": "diamond", "size": 12, "title": "BANK shared by 4 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "director:Jai Sen", "label": "Jai Sen", "shape": "triangle", "size": 12, "title": "DIRECTOR shared by 4 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND--054-P1", "label": "Nanda Enterprises", "shape": "dot", "size": 14.1638, "title": "VND--054-P1 | Tamil Nadu | \u20b92.08 Cr | CARTEL-002"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "pan:BXPPC2136M", "label": "BXPP\u2026136M", "shape": "square", "size": 12, "title": "PAN shared by 4 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "bank:HDFC12712935810", "label": "HDFC\u20265810", "shape": "diamond", "size": 12, "title": "BANK shared by 4 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "director:Avi Agrawal", "label": "Avi Agrawal", "shape": "triangle", "size": 12, "title": "DIRECTOR shared by 4 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND-RJ-2024-7211", "label": "Chaudhari \u0026 Sons", "shape": "dot", "size": 18.7258, "title": "VND-RJ-2024-7211 | Rajasthan | \u20b94.36 Cr | CARTEL-003"}, {"color": "#0f766e", "font": {"color": "#1f2937"}, "id": "pan:PTBHB7713S", "label": "PTBH\u2026713S", "shape": "square", "size": 8, "title": "PAN shared by 1 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "bank:SBIN23700630290", "label": "SBIN\u20260290", "shape": "diamond", "size": 12, "title": "BANK shared by 3 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "director:Zayan Rajagopal", "label": "Zayan Rajagopal", "shape": "triangle", "size": 12, "title": "DIRECTOR shared by 3 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND--013-P2", "label": "Banik Builders", "shape": "dot", "size": 13.2368, "title": "VND--013-P2 | Maharashtra | \u20b91.62 Cr | CARTEL-004"}, {"color": "#0f766e", "font": {"color": "#1f2937"}, "id": "pan:XJTFL7268S", "label": "XJTF\u2026268S", "shape": "square", "size": 8, "title": "PAN shared by 1 vendor(s)"}, {"color": "#b45309", "font": {"color": "#1f2937"}, "id": "bank:BARB73305916601", "label": "BARB\u20266601", "shape": "diamond", "size": 8, "title": "BANK shared by 1 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "director:Eiravati Dora", "label": "Eiravati Dora", "shape": "triangle", "size": 12, "title": "DIRECTOR shared by 3 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND-MH-2024-7930", "label": "Koshy Infrastructure Pvt Ltd", "shape": "dot", "size": 15.3522, "title": "VND-MH-2024-7930 | Maharashtra | \u20b92.68 Cr | CARTEL-004"}, {"color": "#0f766e", "font": {"color": "#1f2937"}, "id": "pan:EXCPN2274G", "label": "EXCP\u2026274G", "shape": "square", "size": 8, "title": "PAN shared by 1 vendor(s)"}, {"color": "#b45309", "font": {"color": "#1f2937"}, "id": "bank:HDFC15609563172", "label": "HDFC\u20263172", "shape": "diamond", "size": 8, "title": "BANK shared by 1 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND--054-P3", "label": "Mahal Infrastructure Pvt Ltd", "shape": "dot", "size": 12.842600000000001, "title": "VND--054-P3 | Tamil Nadu | \u20b91.42 Cr | CARTEL-001"}, {"color": "#0f766e", "font": {"color": "#1f2937"}, "id": "pan:KMTHT5583A", "label": "KMTH\u2026583A", "shape": "square", "size": 8, "title": "PAN shared by 1 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND-UP-2023-3662", "label": "Misra Builders", "shape": "dot", "size": 15.3844, "title": "VND-UP-2023-3662 | Uttar Pradesh | \u20b92.69 Cr | CARTEL-005"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "pan:MCWCB6860P", "label": "MCWC\u2026860P", "shape": "square", "size": 12, "title": "PAN shared by 5 vendor(s)"}, {"color": "#b45309", "font": {"color": "#1f2937"}, "id": "bank:BARB36518662417", "label": "BARB\u20262417", "shape": "diamond", "size": 8, "title": "BANK shared by 1 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "director:Amruta Murty", "label": "Amruta Murty", "shape": "triangle", "size": 12, "title": "DIRECTOR shared by 5 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND-AS-2023-4814", "label": "Sen Infra Projects", "shape": "dot", "size": 14.854800000000001, "title": "VND-AS-2023-4814 | Assam | \u20b92.43 Cr | CARTEL-006"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "pan:TYLPX8074L", "label": "TYLP\u2026074L", "shape": "square", "size": 12, "title": "PAN shared by 3 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "bank:PUNB13570668519", "label": "PUNB\u20268519", "shape": "diamond", "size": 12, "title": "BANK shared by 3 vendor(s)"}, {"color": "#6d28d9", "font": {"color": "#1f2937"}, "id": "director:Chanchal Sanghvi", "label": "Chanchal Sanghvi", "shape": "triangle", "size": 8, "title": "DIRECTOR shared by 1 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND-UP-2024-1832", "label": "Oak Infra Projects", "shape": "dot", "size": 17.898400000000002, "title": "VND-UP-2024-1832 | Uttar Pradesh | \u20b93.95 Cr | CARTEL-005"}, {"color": "#b45309", "font": {"color": "#1f2937"}, "id": "bank:SBIN64330717506", "label": "SBIN\u20267506", "shape": "diamond", "size": 8, "title": "BANK shared by 1 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND-MH-2023-2545", "label": "Bhalla Infra Projects", "shape": "dot", "size": 16.9086, "title": "VND-MH-2023-2545 | Uttar Pradesh | \u20b93.45 Cr | CARTEL-007"}, {"color": "#0f766e", "font": {"color": "#1f2937"}, "id": "pan:MRPCF1133K", "label": "MRPC\u2026133K", "shape": "square", "size": 8, "title": "PAN shared by 1 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "bank:PUNB53410139800", "label": "PUNB\u20269800", "shape": "diamond", "size": 12, "title": "BANK shared by 4 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "director:Pallavi Mahal", "label": "Pallavi Mahal", "shape": "triangle", "size": 12, "title": "DIRECTOR shared by 4 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND--059-P0", "label": "Choudhury Infrastructure Pvt Ltd", "shape": "dot", "size": 13.191600000000001, "title": "VND--059-P0 | Tamil Nadu | \u20b91.60 Cr | CARTEL-001"}, {"color": "#0f766e", "font": {"color": "#1f2937"}, "id": "pan:FHLCU7341V", "label": "FHLC\u2026341V", "shape": "square", "size": 8, "title": "PAN shared by 1 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND--054-P0", "label": "Bedi Infra Projects", "shape": "dot", "size": 12.3086, "title": "VND--054-P0 | Tamil Nadu | \u20b91.15 Cr | CARTEL-002"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND-BR-2024-8244", "label": "Zacharia Enterprises", "shape": "dot", "size": 15.46, "title": "VND-BR-2024-8244 | Bihar | \u20b92.73 Cr | CARTEL-008"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "pan:JUMCG6190T", "label": "JUMC\u2026190T", "shape": "square", "size": 12, "title": "PAN shared by 3 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "bank:BARB22257109056", "label": "BARB\u20269056", "shape": "diamond", "size": 12, "title": "BANK shared by 3 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "director:Harish Subramaniam", "label": "Harish Subramaniam", "shape": "triangle", "size": 12, "title": "DIRECTOR shared by 3 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND-MH-2025-8397", "label": "Bora Infra Projects", "shape": "dot", "size": 15.288, "title": "VND-MH-2025-8397 | Maharashtra | \u20b92.64 Cr | CARTEL-007"}, {"color": "#0f766e", "font": {"color": "#1f2937"}, "id": "pan:KMXFX2892T", "label": "KMXF\u2026892T", "shape": "square", "size": 8, "title": "PAN shared by 1 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND-BR-2025-6279", "label": "Kakar Infrastructure Pvt Ltd", "shape": "dot", "size": 14.9, "title": "VND-BR-2025-6279 | Bihar | \u20b92.45 Cr | CARTEL-009"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "pan:YYZPU5091A", "label": "YYZP\u2026091A", "shape": "square", "size": 12, "title": "PAN shared by 4 vendor(s)"}, {"color": "#b45309", "font": {"color": "#1f2937"}, "id": "bank:PUNB23924858277", "label": "PUNB\u20268277", "shape": "diamond", "size": 8, "title": "BANK shared by 1 vendor(s)"}, {"color": "#6d28d9", "font": {"color": "#1f2937"}, "id": "director:Azad Bhat", "label": "Azad Bhat", "shape": "triangle", "size": 8, "title": "DIRECTOR shared by 1 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND-MH-2024-8953", "label": "Madan Enterprises", "shape": "dot", "size": 15.6278, "title": "VND-MH-2024-8953 | Maharashtra | \u20b92.81 Cr | CARTEL-007"}, {"color": "#0f766e", "font": {"color": "#1f2937"}, "id": "pan:UAKCW9030T", "label": "UAKC\u2026030T", "shape": "square", "size": 8, "title": "PAN shared by 1 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND-AS-2025-8517", "label": "Rai Builders", "shape": "dot", "size": 13.9848, "title": "VND-AS-2025-8517 | Assam | \u20b91.99 Cr | CARTEL-006"}, {"color": "#6d28d9", "font": {"color": "#1f2937"}, "id": "director:Chatresh Bhardwaj", "label": "Chatresh Bhardwaj", "shape": "triangle", "size": 8, "title": "DIRECTOR shared by 1 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND-UP-2023-3546", "label": "Contractor \u0026 Sons", "shape": "dot", "size": 15.791799999999999, "title": "VND-UP-2023-3546 | Rajasthan | \u20b92.90 Cr | CARTEL-005"}, {"color": "#b45309", "font": {"color": "#1f2937"}, "id": "bank:BARB66210752905", "label": "BARB\u20262905", "shape": "diamond", "size": 8, "title": "BANK shared by 1 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND-UP-2023-5325", "label": "Loke Infrastructure Pvt Ltd", "shape": "dot", "size": 15.8036, "title": "VND-UP-2023-5325 | Uttar Pradesh | \u20b92.90 Cr | CARTEL-005"}, {"color": "#b45309", "font": {"color": "#1f2937"}, "id": "bank:UBIN67573153754", "label": "UBIN\u20263754", "shape": "diamond", "size": 8, "title": "BANK shared by 1 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND-RJ-2023-8449", "label": "Bhagat Engineering Works", "shape": "dot", "size": 15.9788, "title": "VND-RJ-2023-8449 | Maharashtra | \u20b92.99 Cr | CARTEL-003"}, {"color": "#0f766e", "font": {"color": "#1f2937"}, "id": "pan:DPBCA5617R", "label": "DPBC\u2026617R", "shape": "square", "size": 8, "title": "PAN shared by 1 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND-TN-2023-4180", "label": "Bhandari \u0026 Sons", "shape": "dot", "size": 15.785599999999999, "title": "VND-TN-2023-4180 | Tamil Nadu | \u20b92.89 Cr | CARTEL-002"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND-TN-2025-2330", "label": "Virk Builders", "shape": "dot", "size": 14.9958, "title": "VND-TN-2025-2330 | Tamil Nadu | \u20b92.50 Cr | CARTEL-001"}, {"color": "#0f766e", "font": {"color": "#1f2937"}, "id": "pan:ZPKFR4587D", "label": "ZPKF\u2026587D", "shape": "square", "size": 8, "title": "PAN shared by 1 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND-BR-2025-2193", "label": "Seth Infrastructure Pvt Ltd", "shape": "dot", "size": 14.2116, "title": "VND-BR-2025-2193 | Bihar | \u20b92.11 Cr | CARTEL-009"}, {"color": "#b45309", "font": {"color": "#1f2937"}, "id": "bank:PUNB53556329165", "label": "PUNB\u20269165", "shape": "diamond", "size": 8, "title": "BANK shared by 1 vendor(s)"}, {"color": "#6d28d9", "font": {"color": "#1f2937"}, "id": "director:Hemangini Sha", "label": "Hemangini Sha", "shape": "triangle", "size": 8, "title": "DIRECTOR shared by 1 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND-TN-2024-8385", "label": "Sunder Enterprises", "shape": "dot", "size": 12.4656, "title": "VND-TN-2024-8385 | Tamil Nadu | \u20b91.23 Cr | CARTEL-002"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND-AS-2024-2291", "label": "Bala \u0026 Sons", "shape": "dot", "size": 15.017, "title": "VND-AS-2024-2291 | Assam | \u20b92.51 Cr | CARTEL-010"}, {"color": "#0f766e", "font": {"color": "#1f2937"}, "id": "pan:TCUPK7299J", "label": "TCUP\u2026299J", "shape": "square", "size": 8, "title": "PAN shared by 1 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "bank:ICIC19394197057", "label": "ICIC\u20267057", "shape": "diamond", "size": 12, "title": "BANK shared by 3 vendor(s)"}, {"color": "#6d28d9", "font": {"color": "#1f2937"}, "id": "director:Abeer Ganesh", "label": "Abeer Ganesh", "shape": "triangle", "size": 8, "title": "DIRECTOR shared by 1 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND-MH-2025-8962", "label": "Setty Infra Projects", "shape": "dot", "size": 14.720400000000001, "title": "VND-MH-2025-8962 | Maharashtra | \u20b92.36 Cr | CARTEL-004"}, {"color": "#0f766e", "font": {"color": "#1f2937"}, "id": "pan:VEVFG8949Y", "label": "VEVF\u2026949Y", "shape": "square", "size": 8, "title": "PAN shared by 1 vendor(s)"}, {"color": "#b45309", "font": {"color": "#1f2937"}, "id": "bank:ICIC18324285372", "label": "ICIC\u20265372", "shape": "diamond", "size": 8, "title": "BANK shared by 1 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND-BR-2025-5681", "label": "Narayanan Enterprises", "shape": "dot", "size": 13.046, "title": "VND-BR-2025-5681 | Bihar | \u20b91.52 Cr | CARTEL-009"}, {"color": "#b45309", "font": {"color": "#1f2937"}, "id": "bank:HDFC30008705001", "label": "HDFC\u20265001", "shape": "diamond", "size": 8, "title": "BANK shared by 1 vendor(s)"}, {"color": "#6d28d9", "font": {"color": "#1f2937"}, "id": "director:Avi Palan", "label": "Avi Palan", "shape": "triangle", "size": 8, "title": "DIRECTOR shared by 1 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND-UP-2024-7658", "label": "Cherian Builders", "shape": "dot", "size": 13.187, "title": "VND-UP-2024-7658 | Uttar Pradesh | \u20b91.59 Cr | CARTEL-005"}, {"color": "#b45309", "font": {"color": "#1f2937"}, "id": "bank:PUNB34153642771", "label": "PUNB\u20262771", "shape": "diamond", "size": 8, "title": "BANK shared by 1 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND-AS-2023-4456", "label": "Chaudry Engineering Works", "shape": "dot", "size": 15.1428, "title": "VND-AS-2023-4456 | Assam | \u20b92.57 Cr | CARTEL-010"}, {"color": "#0f766e", "font": {"color": "#1f2937"}, "id": "pan:GTBHC6963W", "label": "GTBH\u2026963W", "shape": "square", "size": 8, "title": "PAN shared by 1 vendor(s)"}, {"color": "#6d28d9", "font": {"color": "#1f2937"}, "id": "director:Wridesh Chhabra", "label": "Wridesh Chhabra", "shape": "triangle", "size": 8, "title": "DIRECTOR shared by 1 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND-RJ-2025-3496", "label": "Handa Enterprises", "shape": "dot", "size": 15.4976, "title": "VND-RJ-2025-3496 | Rajasthan | \u20b92.75 Cr | CARTEL-011"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "pan:WCNPX9751J", "label": "WCNP\u2026751J", "shape": "square", "size": 12, "title": "PAN shared by 3 vendor(s)"}, {"color": "#b45309", "font": {"color": "#1f2937"}, "id": "bank:PUNB62813006298", "label": "PUNB\u20266298", "shape": "diamond", "size": 8, "title": "BANK shared by 1 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "director:Lucky Bal", "label": "Lucky Bal", "shape": "triangle", "size": 12, "title": "DIRECTOR shared by 3 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND-MH-2025-6107", "label": "Kadakia Contractors", "shape": "dot", "size": 14.117, "title": "VND-MH-2025-6107 | Maharashtra | \u20b92.06 Cr | CARTEL-007"}, {"color": "#0f766e", "font": {"color": "#1f2937"}, "id": "pan:KGBCW2087A", "label": "KGBC\u2026087A", "shape": "square", "size": 8, "title": "PAN shared by 1 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND-RJ-2023-4788", "label": "Khanna Contractors", "shape": "dot", "size": 13.8626, "title": "VND-RJ-2023-4788 | Rajasthan | \u20b91.93 Cr | CARTEL-011"}, {"color": "#b45309", "font": {"color": "#1f2937"}, "id": "bank:PUNB25671641724", "label": "PUNB\u20261724", "shape": "diamond", "size": 8, "title": "BANK shared by 1 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND-AS-2024-8123", "label": "Handa Builders", "shape": "dot", "size": 14.9444, "title": "VND-AS-2024-8123 | Assam | \u20b92.47 Cr | CARTEL-006"}, {"color": "#6d28d9", "font": {"color": "#1f2937"}, "id": "director:Hiral Tella", "label": "Hiral Tella", "shape": "triangle", "size": 8, "title": "DIRECTOR shared by 1 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND-BR-2024-3184", "label": "Karpe Infrastructure Pvt Ltd", "shape": "dot", "size": 14.607800000000001, "title": "VND-BR-2024-3184 | Bihar | \u20b92.30 Cr | CARTEL-008"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND-RJ-2024-7865", "label": "Solanki Enterprises", "shape": "dot", "size": 12.5566, "title": "VND-RJ-2024-7865 | Rajasthan | \u20b91.28 Cr | CARTEL-003"}, {"color": "#0f766e", "font": {"color": "#1f2937"}, "id": "pan:BYDFL6367X", "label": "BYDF\u2026367X", "shape": "square", "size": 8, "title": "PAN shared by 1 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND-AS-2025-2040", "label": "Dash Contractors", "shape": "dot", "size": 13.1108, "title": "VND-AS-2025-2040 | Assam | \u20b91.56 Cr | CARTEL-010"}, {"color": "#0f766e", "font": {"color": "#1f2937"}, "id": "pan:FDFHN1679X", "label": "FDFH\u2026679X", "shape": "square", "size": 8, "title": "PAN shared by 1 vendor(s)"}, {"color": "#6d28d9", "font": {"color": "#1f2937"}, "id": "director:Frederick Nadkarni", "label": "Frederick Nadkarni", "shape": "triangle", "size": 8, "title": "DIRECTOR shared by 1 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND-BR-2023-3414", "label": "Sarma Constructions", "shape": "dot", "size": 13.312, "title": "VND-BR-2023-3414 | Bihar | \u20b91.66 Cr | CARTEL-009"}, {"color": "#b45309", "font": {"color": "#1f2937"}, "id": "bank:HDFC96576497075", "label": "HDFC\u20267075", "shape": "diamond", "size": 8, "title": "BANK shared by 1 vendor(s)"}, {"color": "#6d28d9", "font": {"color": "#1f2937"}, "id": "director:Nachiket Pant", "label": "Nachiket Pant", "shape": "triangle", "size": 8, "title": "DIRECTOR shared by 1 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND-RJ-2024-2771", "label": "Sami Constructions", "shape": "dot", "size": 16.0282, "title": "VND-RJ-2024-2771 | Rajasthan | \u20b93.01 Cr | CARTEL-011"}, {"color": "#b45309", "font": {"color": "#1f2937"}, "id": "bank:PUNB70944777512", "label": "PUNB\u20267512", "shape": "diamond", "size": 8, "title": "BANK shared by 1 vendor(s)"}, {"color": "#dc2626", "font": {"color": "#1f2937"}, "id": "VND-BR-2025-3041", "label": "Walia \u0026 Sons", "shape": "dot", "size": 11.7554, "title": "VND-BR-2025-3041 | Bihar | \u20b90.88 Cr | CARTEL-008"}]);
+                  edges = new vis.DataSet([{"color": "#cbd5e1", "from": "VND-TN-2025-4937", "to": "pan:SSBHH1414W", "width": 1}, {"color": "#dc2626", "from": "VND-TN-2025-4937", "to": "bank:SBIN76741334266", "width": 3}, {"color": "#dc2626", "from": "VND-TN-2025-4937", "to": "director:Jai Sen", "width": 3}, {"color": "#dc2626", "from": "VND--054-P1", "to": "pan:BXPPC2136M", "width": 3}, {"color": "#dc2626", "from": "VND--054-P1", "to": "bank:HDFC12712935810", "width": 3}, {"color": "#dc2626", "from": "VND--054-P1", "to": "director:Avi Agrawal", "width": 3}, {"color": "#cbd5e1", "from": "VND-RJ-2024-7211", "to": "pan:PTBHB7713S", "width": 1}, {"color": "#dc2626", "from": "VND-RJ-2024-7211", "to": "bank:SBIN23700630290", "width": 3}, {"color": "#dc2626", "from": "VND-RJ-2024-7211", "to": "director:Zayan Rajagopal", "width": 3}, {"color": "#cbd5e1", "from": "VND--013-P2", "to": "pan:XJTFL7268S", "width": 1}, {"color": "#cbd5e1", "from": "VND--013-P2", "to": "bank:BARB73305916601", "width": 1}, {"color": "#dc2626", "from": "VND--013-P2", "to": "director:Eiravati Dora", "width": 3}, {"color": "#cbd5e1", "from": "VND-MH-2024-7930", "to": "pan:EXCPN2274G", "width": 1}, {"color": "#cbd5e1", "from": "VND-MH-2024-7930", "to": "bank:HDFC15609563172", "width": 1}, {"color": "#dc2626", "from": "VND-MH-2024-7930", "to": "director:Eiravati Dora", "width": 3}, {"color": "#cbd5e1", "from": "VND--054-P3", "to": "pan:KMTHT5583A", "width": 1}, {"color": "#dc2626", "from": "VND--054-P3", "to": "bank:SBIN76741334266", "width": 3}, {"color": "#dc2626", "from": "VND--054-P3", "to": "director:Jai Sen", "width": 3}, {"color": "#dc2626", "from": "VND-UP-2023-3662", "to": "pan:MCWCB6860P", "width": 3}, {"color": "#cbd5e1", "from": "VND-UP-2023-3662", "to": "bank:BARB36518662417", "width": 1}, {"color": "#dc2626", "from": "VND-UP-2023-3662", "to": "director:Amruta Murty", "width": 3}, {"color": "#dc2626", "from": "VND-AS-2023-4814", "to": "pan:TYLPX8074L", "width": 3}, {"color": "#dc2626", "from": "VND-AS-2023-4814", "to": "bank:PUNB13570668519", "width": 3}, {"color": "#cbd5e1", "from": "VND-AS-2023-4814", "to": "director:Chanchal Sanghvi", "width": 1}, {"color": "#dc2626", "from": "VND-UP-2024-1832", "to": "pan:MCWCB6860P", "width": 3}, {"color": "#cbd5e1", "from": "VND-UP-2024-1832", "to": "bank:SBIN64330717506", "width": 1}, {"color": "#dc2626", "from": "VND-UP-2024-1832", "to": "director:Amruta Murty", "width": 3}, {"color": "#cbd5e1", "from": "VND-MH-2023-2545", "to": "pan:MRPCF1133K", "width": 1}, {"color": "#dc2626", "from": "VND-MH-2023-2545", "to": "bank:PUNB53410139800", "width": 3}, {"color": "#dc2626", "from": "VND-MH-2023-2545", "to": "director:Pallavi Mahal", "width": 3}, {"color": "#cbd5e1", "from": "VND--059-P0", "to": "pan:FHLCU7341V", "width": 1}, {"color": "#dc2626", "from": "VND--059-P0", "to": "bank:SBIN76741334266", "width": 3}, {"color": "#dc2626", "from": "VND--059-P0", "to": "director:Jai Sen", "width": 3}, {"color": "#dc2626", "from": "VND--054-P0", "to": "pan:BXPPC2136M", "width": 3}, {"color": "#dc2626", "from": "VND--054-P0", "to": "bank:HDFC12712935810", "width": 3}, {"color": "#dc2626", "from": "VND--054-P0", "to": "director:Avi Agrawal", "width": 3}, {"color": "#dc2626", "from": "VND-BR-2024-8244", "to": "pan:JUMCG6190T", "width": 3}, {"color": "#dc2626", "from": "VND-BR-2024-8244", "to": "bank:BARB22257109056", "width": 3}, {"color": "#dc2626", "from": "VND-BR-2024-8244", "to": "director:Harish Subramaniam", "width": 3}, {"color": "#cbd5e1", "from": "VND-MH-2025-8397", "to": "pan:KMXFX2892T", "width": 1}, {"color": "#dc2626", "from": "VND-MH-2025-8397", "to": "bank:PUNB53410139800", "width": 3}, {"color": "#dc2626", "from": "VND-MH-2025-8397", "to": "director:Pallavi Mahal", "width": 3}, {"color": "#dc2626", "from": "VND-BR-2025-6279", "to": "pan:YYZPU5091A", "width": 3}, {"color": "#cbd5e1", "from": "VND-BR-2025-6279", "to": "bank:PUNB23924858277", "width": 1}, {"color": "#cbd5e1", "from": "VND-BR-2025-6279", "to": "director:Azad Bhat", "width": 1}, {"color": "#cbd5e1", "from": "VND-MH-2024-8953", "to": "pan:UAKCW9030T", "width": 1}, {"color": "#dc2626", "from": "VND-MH-2024-8953", "to": "bank:PUNB53410139800", "width": 3}, {"color": "#dc2626", "from": "VND-MH-2024-8953", "to": "director:Pallavi Mahal", "width": 3}, {"color": "#dc2626", "from": "VND-AS-2025-8517", "to": "pan:TYLPX8074L", "width": 3}, {"color": "#dc2626", "from": "VND-AS-2025-8517", "to": "bank:PUNB13570668519", "width": 3}, {"color": "#cbd5e1", "from": "VND-AS-2025-8517", "to": "director:Chatresh Bhardwaj", "width": 1}, {"color": "#dc2626", "from": "VND-UP-2023-3546", "to": "pan:MCWCB6860P", "width": 3}, {"color": "#cbd5e1", "from": "VND-UP-2023-3546", "to": "bank:BARB66210752905", "width": 1}, {"color": "#dc2626", "from": "VND-UP-2023-3546", "to": "director:Amruta Murty", "width": 3}, {"color": "#dc2626", "from": "VND-UP-2023-5325", "to": "pan:MCWCB6860P", "width": 3}, {"color": "#cbd5e1", "from": "VND-UP-2023-5325", "to": "bank:UBIN67573153754", "width": 1}, {"color": "#dc2626", "from": "VND-UP-2023-5325", "to": "director:Amruta Murty", "width": 3}, {"color": "#cbd5e1", "from": "VND-RJ-2023-8449", "to": "pan:DPBCA5617R", "width": 1}, {"color": "#dc2626", "from": "VND-RJ-2023-8449", "to": "bank:SBIN23700630290", "width": 3}, {"color": "#dc2626", "from": "VND-RJ-2023-8449", "to": "director:Zayan Rajagopal", "width": 3}, {"color": "#dc2626", "from": "VND-TN-2023-4180", "to": "pan:BXPPC2136M", "width": 3}, {"color": "#dc2626", "from": "VND-TN-2023-4180", "to": "bank:HDFC12712935810", "width": 3}, {"color": "#dc2626", "from": "VND-TN-2023-4180", "to": "director:Avi Agrawal", "width": 3}, {"color": "#cbd5e1", "from": "VND-TN-2025-2330", "to": "pan:ZPKFR4587D", "width": 1}, {"color": "#dc2626", "from": "VND-TN-2025-2330", "to": "bank:SBIN76741334266", "width": 3}, {"color": "#dc2626", "from": "VND-TN-2025-2330", "to": "director:Jai Sen", "width": 3}, {"color": "#dc2626", "from": "VND-BR-2025-2193", "to": "pan:YYZPU5091A", "width": 3}, {"color": "#cbd5e1", "from": "VND-BR-2025-2193", "to": "bank:PUNB53556329165", "width": 1}, {"color": "#cbd5e1", "from": "VND-BR-2025-2193", "to": "director:Hemangini Sha", "width": 1}, {"color": "#dc2626", "from": "VND-TN-2024-8385", "to": "pan:BXPPC2136M", "width": 3}, {"color": "#dc2626", "from": "VND-TN-2024-8385", "to": "bank:HDFC12712935810", "width": 3}, {"color": "#dc2626", "from": "VND-TN-2024-8385", "to": "director:Avi Agrawal", "width": 3}, {"color": "#cbd5e1", "from": "VND-AS-2024-2291", "to": "pan:TCUPK7299J", "width": 1}, {"color": "#dc2626", "from": "VND-AS-2024-2291", "to": "bank:ICIC19394197057", "width": 3}, {"color": "#cbd5e1", "from": "VND-AS-2024-2291", "to": "director:Abeer Ganesh", "width": 1}, {"color": "#cbd5e1", "from": "VND-MH-2025-8962", "to": "pan:VEVFG8949Y", "width": 1}, {"color": "#cbd5e1", "from": "VND-MH-2025-8962", "to": "bank:ICIC18324285372", "width": 1}, {"color": "#dc2626", "from": "VND-MH-2025-8962", "to": "director:Eiravati Dora", "width": 3}, {"color": "#dc2626", "from": "VND-BR-2025-5681", "to": "pan:YYZPU5091A", "width": 3}, {"color": "#cbd5e1", "from": "VND-BR-2025-5681", "to": "bank:HDFC30008705001", "width": 1}, {"color": "#cbd5e1", "from": "VND-BR-2025-5681", "to": "director:Avi Palan", "width": 1}, {"color": "#dc2626", "from": "VND-UP-2024-7658", "to": "pan:MCWCB6860P", "width": 3}, {"color": "#cbd5e1", "from": "VND-UP-2024-7658", "to": "bank:PUNB34153642771", "width": 1}, {"color": "#dc2626", "from": "VND-UP-2024-7658", "to": "director:Amruta Murty", "width": 3}, {"color": "#cbd5e1", "from": "VND-AS-2023-4456", "to": "pan:GTBHC6963W", "width": 1}, {"color": "#dc2626", "from": "VND-AS-2023-4456", "to": "bank:ICIC19394197057", "width": 3}, {"color": "#cbd5e1", "from": "VND-AS-2023-4456", "to": "director:Wridesh Chhabra", "width": 1}, {"color": "#dc2626", "from": "VND-RJ-2025-3496", "to": "pan:WCNPX9751J", "width": 3}, {"color": "#cbd5e1", "from": "VND-RJ-2025-3496", "to": "bank:PUNB62813006298", "width": 1}, {"color": "#dc2626", "from": "VND-RJ-2025-3496", "to": "director:Lucky Bal", "width": 3}, {"color": "#cbd5e1", "from": "VND-MH-2025-6107", "to": "pan:KGBCW2087A", "width": 1}, {"color": "#dc2626", "from": "VND-MH-2025-6107", "to": "bank:PUNB53410139800", "width": 3}, {"color": "#dc2626", "from": "VND-MH-2025-6107", "to": "director:Pallavi Mahal", "width": 3}, {"color": "#dc2626", "from": "VND-RJ-2023-4788", "to": "pan:WCNPX9751J", "width": 3}, {"color": "#cbd5e1", "from": "VND-RJ-2023-4788", "to": "bank:PUNB25671641724", "width": 1}, {"color": "#dc2626", "from": "VND-RJ-2023-4788", "to": "director:Lucky Bal", "width": 3}, {"color": "#dc2626", "from": "VND-AS-2024-8123", "to": "pan:TYLPX8074L", "width": 3}, {"color": "#dc2626", "from": "VND-AS-2024-8123", "to": "bank:PUNB13570668519", "width": 3}, {"color": "#cbd5e1", "from": "VND-AS-2024-8123", "to": "director:Hiral Tella", "width": 1}, {"color": "#dc2626", "from": "VND-BR-2024-3184", "to": "pan:JUMCG6190T", "width": 3}, {"color": "#dc2626", "from": "VND-BR-2024-3184", "to": "bank:BARB22257109056", "width": 3}, {"color": "#dc2626", "from": "VND-BR-2024-3184", "to": "director:Harish Subramaniam", "width": 3}, {"color": "#cbd5e1", "from": "VND-RJ-2024-7865", "to": "pan:BYDFL6367X", "width": 1}, {"color": "#dc2626", "from": "VND-RJ-2024-7865", "to": "bank:SBIN23700630290", "width": 3}, {"color": "#dc2626", "from": "VND-RJ-2024-7865", "to": "director:Zayan Rajagopal", "width": 3}, {"color": "#cbd5e1", "from": "VND-AS-2025-2040", "to": "pan:FDFHN1679X", "width": 1}, {"color": "#dc2626", "from": "VND-AS-2025-2040", "to": "bank:ICIC19394197057", "width": 3}, {"color": "#cbd5e1", "from": "VND-AS-2025-2040", "to": "director:Frederick Nadkarni", "width": 1}, {"color": "#dc2626", "from": "VND-BR-2023-3414", "to": "pan:YYZPU5091A", "width": 3}, {"color": "#cbd5e1", "from": "VND-BR-2023-3414", "to": "bank:HDFC96576497075", "width": 1}, {"color": "#cbd5e1", "from": "VND-BR-2023-3414", "to": "director:Nachiket Pant", "width": 1}, {"color": "#dc2626", "from": "VND-RJ-2024-2771", "to": "pan:WCNPX9751J", "width": 3}, {"color": "#cbd5e1", "from": "VND-RJ-2024-2771", "to": "bank:PUNB70944777512", "width": 1}, {"color": "#dc2626", "from": "VND-RJ-2024-2771", "to": "director:Lucky Bal", "width": 3}, {"color": "#dc2626", "from": "VND-BR-2025-3041", "to": "pan:JUMCG6190T", "width": 3}, {"color": "#dc2626", "from": "VND-BR-2025-3041", "to": "bank:BARB22257109056", "width": 3}, {"color": "#dc2626", "from": "VND-BR-2025-3041", "to": "director:Harish Subramaniam", "width": 3}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "barnesHut": {
+            "avoidOverlap": 0,
+            "centralGravity": 0.3,
+            "damping": 0.09,
+            "gravitationalConstant": -12000,
+            "springConstant": 0.02,
+            "springLength": 140
+        },
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

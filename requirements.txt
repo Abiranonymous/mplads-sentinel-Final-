@@ -1,0 +1,10 @@
+streamlit
+pandas
+fastapi
+uvicorn
+scikit-learn
+rapidfuzz
+plotly
+faker
+streamlit-authenticator
+bcrypt
