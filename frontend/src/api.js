@@ -1,4 +1,4 @@
-const API_BASE = ' https://mplads-sentinel-final.onrender.com/api';
+const API_BASE = 'https://mplads-sentinel-final.onrender.com/api';
 
 async function fetchJSON(path, options = {}) {
   const res = await fetch(`${API_BASE}${path}`, {
