@@ -89,3 +89,4 @@ export function fetchGroundTruth() {
 export function fetchHealth() {
   return fetchJSON('/health');
 }
+
